@@ -6,7 +6,7 @@ let login = {
     insert: "INSERT INTO test(id, name, age) VALUES(?,?,?)",
     update: "UPDATE test SET name=?, age=? WHERE id=?",
     delete: "DELETE FROM test WHERE id=?",
-    phone: "select * from login where phone=?",
+    select_phone: "select * from login where phone=?",
     queryAll: "SELECT * FROM test",
 };
 let teacher = {

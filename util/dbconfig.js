@@ -1,27 +1,29 @@
 const mysql = require('mysql');
-const mysqlConfig = require('./mysqlConfig');
-const json = require("./json");
-const sql = require('./sql');
-const pool = mysql.createPool(mysqlConfig);
+const $mysqlConfig = require('./mysqlConfig');
+const pool = mysql.createPool($mysqlConfig);
 /**
  * @description 新增一条数据
- * @param  {str} table 数据库表的名称
+ * @param  {str} sql sql语句
  * @param  {obj} req 插入的数据
- * @param  {obj} res 接口函数中的res对象
- * @param  {obj} next 接口函数中的next对象
  */
-let dbAdd = (table, req, res, next) => {
-    pool.getConnection((err, conn) => {
+let dbAdd = (sql, req) => {
+    return new Promise((resolve,reject)=>{
         let paramValue = paramList(req);
-        conn.query(sql[table].insert, [...paramValue], (err, result) => {
-            if (result) {
-                result = "add";
-            }
-            // 以json形式，把操作结果返回给前台页面
-            json(res, result, err);
-            // 释放连接
-            conn.release();
+        pool.getConnection((err,conn)=>{
+            conn.query(sql,[...paramValue],(err,result)=>{
+                if(err){
+                    reject(err);
+                }else{
+                    if(result){
+                        res='add';
+                        resolve(res);
+                    }
+                };
+                conn.release();
+            })
         });
+    }).catch(err=>{
+        console.log(err);
     });
 };
 
@@ -32,23 +34,24 @@ let dbAdd = (table, req, res, next) => {
 let dbDelete = (sql, req) => {
     return new Promise((resolve,reject)=>{
         let paramValue=paramList(req);
-        pool.getConnection((err,coon)=>{
-            conn.query(sql,[...paramList],(err,result)=>{
+        pool.getConnection((err,conn)=>{
+            conn.query(sql,[...paramValue],(err,result)=>{
                 if(err){
                     reject(err)
                 }else{
                     if(result.affectedRows>0){
-                        result='delete';
-                        resolve(result);
+                        res='delete';
+                        resolve(res);
                     }else{
-                        result='undefined';
-                        resolve(result);
+                        res='undefined';
+                        resolve(res);
                     }
-                }
+                };
+                conn.release();
             });
         });
     }).catch(err=>{
-        console.log(err)
+        console.log(err);
     });
 };
 
@@ -65,19 +68,19 @@ let dbUpdate = (sql,req) => {
                     reject(err)
                 }else{
                     if (result.affectedRows > 0) {
-                        result = "update";
-                        resolve(result);
+                        res = "update";
+                        resolve(res);
                     } else {
-                        result = 'undefined'
-                        resolve(result);
+                        res = 'undefined'
+                        resolve(res);
                     }
-                }
+                };
                 conn.release();
             });
         });
     }).catch(err=>{
-       console.log(err)
-    })
+        console.log(err);
+    });
     
 };
 
@@ -91,7 +94,7 @@ let dbfind = (sql,req) => {
         pool.getConnection((err, conn) => {
             conn.query(sql, [...paramValue], (err, result) => {
                 if (err) {
-                    reject(err)
+                    reject(err);
                 } else {
                     if (result != "") {
                         res = {
@@ -103,34 +106,42 @@ let dbfind = (sql,req) => {
                         res = 'undefined'
                         resolve(res)
                     }
-                }
+                };
                 conn.release();
             });
         });
     }).catch(err=>{
-        reject(err)
-    })
+        reject(err);
+    });
 };
 
 /**
  *@description 查找全部数据
   @param 同abAdd
  */
-let dbQueryAll = (table, req, res, next) => {
-    pool.getConnection((err, conn) => {
-        conn.query(sql[table].queryAll, (err, result) => {
-            if (result != "") {
-                var _result = result;
-                result = {
-                    result: "selectall",
-                    data: _result,
+let dbfindAll = (sql, req) => {
+    return new Promise((resolve,reject)=>{
+        pool.getConnection((err,conn)=>{
+            conn.query(sql,(err,result)=>{
+                if(err){
+                    reject(err);
+                }else{
+                    if (result != "") {
+                        res = {
+                            result: "selectall",
+                            data: result,
+                        };
+                        resolve(res)
+                    } else {
+                        res = 'undefined';
+                        resolve(res)
+                    }
                 };
-            } else {
-                result = undefined;
-            }
-            json(res, result, err);
-            conn.release();
-        });
+                conn.release();
+            })
+        })
+    }).catch(err=>{
+        console.log(err);
     });
 };
 
@@ -153,30 +164,5 @@ module.exports = {
     dbDelete,
     dbUpdate,
     dbfind,
-    dbQueryAll,
+    dbfindAll,
 };
-// module.exports = {
-//     SysqlConnect: function (sySql, sqlArr) {
-//         return new Promise((resolve, reject) => {
-//             var pool = mysql.createPool(this.config)
-//             pool.getConnection((err, conn) => {
-//                 if (err) {
-//                     reject(err)
-//                 } else {
-//                     //事件驱动回调
-//                     conn.query(sySql, sqlArr, (err, data) => {
-//                         if (err) {
-//                             reject(err)
-//                         } else {
-//                             resolve(data)
-//                         }
-//                     });
-//                 }
-//                 //释放链接
-//                 conn.release();
-//             })
-//         }).catch(err => {
-//             console.log(err)
-//         })
-//     }
-// }
