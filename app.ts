@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 //post 请求插件
 var bodyParser=require('body-parser');
 var app = express();
@@ -24,7 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
-app.all("*",function(req,res,next){
+app.all("*",function(req: any,res: { header: (arg0: string, arg1: string | number) => void; },next: () => void){
     res.header("Access-Control-Allow-Origin", "*"); //允许的header类型
     res.header("Access-Control-Allow-Headers", "Content-type"); //跨域允许的请求方式
     res.header(
@@ -36,7 +35,6 @@ app.all("*",function(req,res,next){
 })
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // app.use(function(req, res, next) {
 //   next(createError(404));

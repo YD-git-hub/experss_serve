@@ -1,29 +1,29 @@
-const mysql = require('mysql');
-const $mysqlConfig = require('./mysqlConfig');
-const pool = mysql.createPool($mysqlConfig);
+import {createPool} from 'mysql';
+import $mysqlConfig from "./mysqlConfig";
+const pool = createPool($mysqlConfig);
 /**
  * @description 新增一条数据
  * @param  {str} sql sql语句
  * @param  {obj} req 插入的数据
  */
-let dbAdd = (sql, req) => {
+let dbAdd = (sql:string, req:Record<string,unknown>) => {
     return new Promise((resolve,reject)=>{
         let paramValue = paramList(req);
-        pool.getConnection((err,conn)=>{
-            conn.query(sql,[...paramValue],(err,result)=>{
-                if(err){
-                    reject(err);
+        pool.getConnection((_err,conn)=>{
+            conn.query(sql,[...paramValue],(_err_1,result)=>{
+                if(_err_1){
+                    reject(_err_1);
                 }else{
                     if(result){
-                        res='add';
+                        let res='add';
                         resolve(res);
                     }
                 };
                 conn.release();
             })
         });
-    }).catch(err=>{
-        console.log(err);
+    }).catch(_err_2=>{
+        console.log(_err_2);
     });
 };
 
@@ -31,27 +31,27 @@ let dbAdd = (sql, req) => {
  *@description 删除一条数据
   @param 同abAdd
  */
-let dbDelete = (sql, req) => {
+let dbDelete = (sql:string, req:Record<string,unknown>) => {
     return new Promise((resolve,reject)=>{
         let paramValue=paramList(req);
-        pool.getConnection((err,conn)=>{
-            conn.query(sql,[...paramValue],(err,result)=>{
-                if(err){
-                    reject(err)
+        pool.getConnection((_err,conn)=>{
+            conn.query(sql,[...paramValue],(_err_1,result)=>{
+                if(_err_1){
+                    reject(_err_1)
                 }else{
                     if(result.affectedRows>0){
-                        res='delete';
+                        let res='delete';
                         resolve(res);
                     }else{
-                        res='undefined';
+                        let res='undefined';
                         resolve(res);
                     }
                 };
                 conn.release();
             });
         });
-    }).catch(err=>{
-        console.log(err);
+    }).catch(_err_2=>{
+        console.log(_err_2);
     });
 };
 
@@ -59,19 +59,19 @@ let dbDelete = (sql, req) => {
  *@description 修改一条数据
   @param 同abAdd
  */
-let dbUpdate = (sql,req) => {
+let dbUpdate = (sql:string,req:Record<string,unknown>) => {
     return new Promise((resolve, reject) => {
         let paramValue = paramList(req);
-        pool.getConnection((err, conn) => {
+        pool.getConnection((_err, conn) => {
             conn.query(sql, [...paramValue], (err, result) => {
                 if(err){
                     reject(err)
                 }else{
                     if (result.affectedRows > 0) {
-                        res = "update";
+                        let res:string = "update";
                         resolve(res);
                     } else {
-                        res = 'undefined'
+                        let res:string = 'undefined'
                         resolve(res);
                     }
                 };
@@ -88,30 +88,30 @@ let dbUpdate = (sql,req) => {
  *@description 查找一条数据
   @param 同abAdd
  */
-let dbfind = (sql,req) => {
+let dbfind = (sql:string,req:Record<string,unknown>) => {
     return new Promise((resolve, reject) => {
         let paramValue = paramList(req);
-        pool.getConnection((err, conn) => {
-            conn.query(sql, [...paramValue], (err, result) => {
-                if (err) {
-                    reject(err);
+        pool.getConnection((_err, conn) => {
+            conn.query(sql, [...paramValue], (_err_1, result) => {
+                if (_err_1) {
+                    reject(_err_1);
                 } else {
                     if (result != "") {
-                        res = {
+                        let res = {
                             result: "select",
                             data: result,
                         };
                         resolve(res)
                     } else {
-                        res = 'undefined'
+                        let res= 'undefined'
                         resolve(res)
                     }
                 };
                 conn.release();
             });
         });
-    }).catch(err=>{
-        reject(err);
+    }).catch(_err_2=>{
+        console.log(_err_2)
     });
 };
 
@@ -119,37 +119,37 @@ let dbfind = (sql,req) => {
  *@description 查找全部数据
   @param 同abAdd
  */
-let dbfindAll = (sql, req) => {
+let dbfindAll = (sql:string) => {
     return new Promise((resolve,reject)=>{
-        pool.getConnection((err,conn)=>{
-            conn.query(sql,(err,result)=>{
-                if(err){
-                    reject(err);
+        pool.getConnection((_err,conn)=>{
+            conn.query(sql,(_err_1,result)=>{
+                if(_err_1){
+                    reject(_err_1);
                 }else{
                     if (result != "") {
-                        res = {
+                        let res:object = {
                             result: "selectall",
                             data: result,
                         };
                         resolve(res)
                     } else {
-                        res = 'undefined';
+                        let res:string = 'undefined';
                         resolve(res)
                     }
                 };
                 conn.release();
             })
         })
-    }).catch(err=>{
-        console.log(err);
+    }).catch(_err_2=>{
+        console.log(_err_2);
     });
 };
 
 /**
  * @description 遍历数据的值
- * @param {obj} obj 包含参数的对象
+ * @param {Record<string,unknown>} obj 包含参数的对象
  * */
-let paramList = (obj) => {
+let paramList = (obj:Record<string,unknown>) => {
     let paramArr = [];
     for (let key in obj) {
         if (obj[key]) {

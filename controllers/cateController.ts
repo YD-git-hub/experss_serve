@@ -1,12 +1,11 @@
+import { login } from './../util/sql';
 var dbConfig=require('../util/dbconfig');
-const sqlbud = require('../util/sql');
 //登录
-Login=async (req,res)=>{
+const Login=async (req:any,res:any)=>{
     let {phone}=req.body
     let data=await verifyLogin(phone)
     if(data){
         //查找成功进行登录验证
-
         res.json({
             code: "200",
             msg: "查找成功",
@@ -20,8 +19,8 @@ Login=async (req,res)=>{
     }
 };
 //验证账号是存在
-let verifyLogin = async (phone)=>{
-    var sql=sqlbud['login'].select_phone
+let verifyLogin = async (phone:Number)=>{
+    var sql=login.select_phone
     var sqlArr={
         'phone':phone
     }
@@ -33,8 +32,8 @@ let verifyLogin = async (phone)=>{
     }
 }
 //验证账号密码是否匹配
-let verifyname = async (phone,password)=>{
-    var sql=sqlbud['login'].select_phone
+let verifyname = async (phone:number,password:string)=>{
+    var sql=login.select_phone
     var sqlArr={
         'phone':phone,
         'user_password':password

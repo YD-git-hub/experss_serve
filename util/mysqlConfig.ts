@@ -2,7 +2,7 @@
  * Created by Walker on 2020/05/06.
  * 数据库的配置
  */
-var mysqlConfig = {
+let mysqlConfig:Record<string,unknown> = {
   host: "localhost",
   user: "mynode",
   password: "mynode",
@@ -10,4 +10,4 @@ var mysqlConfig = {
   database: "mynode",
 };
 
-module.exports = mysqlConfig
+export default mysqlConfig
