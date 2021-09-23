@@ -7,5 +7,6 @@ export let login:Record<string,unknown> = {
     update: "UPDATE test SET name=?, age=? WHERE id=?",
     delete: "DELETE FROM test WHERE id=?",
     select_phone: "select * from login where phone=?",
+    select_login: "select * from login where phone=? and user_password=?",
     queryAll: "SELECT * FROM test",
 };
