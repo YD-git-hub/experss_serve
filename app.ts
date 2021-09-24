@@ -1,9 +1,9 @@
-// var createError = require('http-errors');
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-var indexRouter=require('./routes/index')
+let loginRouter=require('./routes/login')
+let signRouter=require('./routes/sign')
 //post 请求插件
 // import bodyParser from 'body-parser';
 const app = express();
@@ -25,5 +25,6 @@ app.use(express.urlencoded({extended:false}));
 //     res.header("Content-Type", "application/json;charset=utf-8");
 //     next();
 // });
-app.use('/', indexRouter);
+app.use('/login', loginRouter);
+app.use('/sign', signRouter);
 server.listen('3000',() => console.log("Example app listening on port 3000!"));

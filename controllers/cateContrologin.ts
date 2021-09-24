@@ -1,11 +1,13 @@
 import { login } from "./../util/sql";
 let dbConfig = require("../util/dbconfig");
+let RETURNED = require("../common/returned");
+import Express from "express"
 //存储验证码
 let verifcode = "";
 //登录
-const Login = async (
+const _Login = async (
   req: { body: { phone: string | Number; user_password: string; code: string } },
-  res: any
+  res: Express.Response
 ) => {
   const { phone, user_password, code } = req.body;
   const codemsg = verif_code(code, res);
@@ -13,28 +15,28 @@ const Login = async (
   const _data_1 = await verifyname(phone, user_password, res);
   if(codemsg === "验证成功!" && _data && _data_1 ){
     res.json({
-        code: "200",
+        code: RETURNED._SUCCESS,
         msg: _data_1,
     });
   };
 };
-const Code = (req = null, res: any) => {
+const _Code = (req:Express.Request, res: Express.Response) => {
   verifcode = verificationcode();
   if (verifcode) {
     res.json({
-      code: "200",
+      code:RETURNED._SUCCESS,
       msg: "获取成功",
       data: verifcode,
     });
   } else {
     res.json({
-      code: "-1",
+      code:RETURNED._ERROR,
       msg: "获取失败",
     });
   }
 };
 //验证账号是否存在
-let verifyLogin = async (phone: string | Number , res: any) => {
+let verifyLogin = async (phone: string | Number , res: Express.Response) => {
   var sql = login.select_phone;
   var sqlArr = {
     phone
@@ -44,13 +46,13 @@ let verifyLogin = async (phone: string | Number , res: any) => {
     return _data.data;
   } else {
     res.json({
-      code: "-1",
+      code: RETURNED._ERROR,
       msg: "账号不存在!",
     });
   }
 };
 //验证账号密码是否匹配
-let verifyname = async (phone:string | Number, user_password: string, res: any) => {
+let verifyname = async (phone:string | Number, user_password: string, res: Express.Response) => {
   var sql = login.select_login;
   var sqlArr = {
     phone,
@@ -61,15 +63,15 @@ let verifyname = async (phone:string | Number, user_password: string, res: any) 
     return _data.data;
   } else {
     res.json({
-      code: "-1",
+      code: RETURNED._ERROR,
       msg: "账号或密码错误!",
     });
   }
 };
 //验证验证码是否匹配
-let verif_code = (code: string, res: any) => {
+let verif_code = (code: string, res: Express.Response) => {
   if (verifcode === code) return "验证成功!";
-  else res.json({ code: "-1", msg: "验证验有误请重新输入!" });
+  else res.json({ code: RETURNED._ERROR, msg: "验证验有误请重新输入!" });
 };
 //随机4位验证吗
 let verificationcode = () => {
@@ -93,6 +95,7 @@ let verificationcode = () => {
 };
 //暴露
 module.exports = {
-  Login,
-  Code,
+  _Login,
+  _Code,
+  verif_code,
 };
