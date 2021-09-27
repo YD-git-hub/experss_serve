@@ -6,7 +6,7 @@ const pool = createPool($mysqlConfig);
  * @param  {str} sql sql语句
  * @param  {obj} req 插入的数据
  */
-let dbAdd = (sql:string, req:Record<string,unknown>) => {
+export const dbAdd = (sql:string, req:Record<string,unknown>) => {
     return new Promise((resolve,reject)=>{
         let paramValue = paramList(req);
         pool.getConnection((_err,conn)=>{
@@ -31,7 +31,7 @@ let dbAdd = (sql:string, req:Record<string,unknown>) => {
  *@description 删除一条数据
   @param 同abAdd
  */
-let dbDelete = (sql:string, req:Record<string,unknown>) => {
+export const dbDelete = (sql:string, req:Record<string,unknown>) => {
     return new Promise((resolve,reject)=>{
         let paramValue=paramList(req);
         pool.getConnection((_err,conn)=>{
@@ -59,7 +59,7 @@ let dbDelete = (sql:string, req:Record<string,unknown>) => {
  *@description 修改一条数据
   @param 同abAdd
  */
-let dbUpdate = (sql:string,req:Record<string,unknown>) => {
+export const dbUpdate = (sql:string,req:Record<string,unknown>) => {
     return new Promise((resolve, reject) => {
         let paramValue = paramList(req);
         pool.getConnection((_err, conn) => {
@@ -88,7 +88,7 @@ let dbUpdate = (sql:string,req:Record<string,unknown>) => {
  *@description 查找一条数据
   @param 同abAdd
  */
-let dbfind = (sql:string,req:Record<string,unknown>) => {
+export const dbfind = (sql:string,req:Record<string,unknown>) => {
     return new Promise((resolve, reject) => {
         let paramValue = paramList(req);
         pool.getConnection((_err, conn) => {
@@ -103,7 +103,9 @@ let dbfind = (sql:string,req:Record<string,unknown>) => {
                         };
                         resolve(res)
                     } else {
-                        let res= 'undefined'
+                        let res={
+                            result:'undefined'
+                        } 
                         resolve(res)
                     }
                 };
@@ -119,7 +121,7 @@ let dbfind = (sql:string,req:Record<string,unknown>) => {
  *@description 查找全部数据
   @param 同abAdd
  */
-let dbfindAll = (sql:string) => {
+export const dbfindAll = (sql:string) => {
     return new Promise((resolve,reject)=>{
         pool.getConnection((_err,conn)=>{
             conn.query(sql,(_err_1,result)=>{
@@ -127,13 +129,15 @@ let dbfindAll = (sql:string) => {
                     reject(_err_1);
                 }else{
                     if (result != "") {
-                        let res:object = {
+                        let res = {
                             result: "selectall",
                             data: result,
                         };
                         resolve(res)
                     } else {
-                        let res:string = 'undefined';
+                        let res={
+                            result:'undefined'
+                        }
                         resolve(res)
                     }
                 };
@@ -159,10 +163,10 @@ let paramList = (obj:Record<string,unknown>) => {
     return paramArr;
 };
 
-module.exports = {
-    dbAdd,
-    dbDelete,
-    dbUpdate,
-    dbfind,
-    dbfindAll,
-};
+// module.exports = {
+//     dbAdd,
+//     dbDelete,
+//     dbUpdate,
+//     dbfind,
+//     dbfindAll,
+// };

@@ -1,7 +1,8 @@
-var express=require("express");
+import express from "express"
 var router = express.Router();
-var cate =require('../controllers/cateControsign');
+import * as cate from "../controllers/cateControsign"
 
 router.post('/sign',cate._sign);
 
-module.exports = router;
+// module.exports = router;
+export default router;

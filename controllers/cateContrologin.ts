@@ -1,11 +1,12 @@
 import { login } from "./../util/sql";
-let dbConfig = require("../util/dbconfig");
-let RETURNED = require("../common/returned");
+import * as dbConfig from "../util/dbconfig";
+import RETURNED from "../common/returned";
 import Express from "express"
+import {setToken} from "../token/token"
 //存储验证码
 let verifcode = "";
 //登录
-const _Login = async (
+export const _Login = async (
   req: { body: { phone: string | Number; user_password: string; code: string } },
   res: Express.Response
 ) => {
@@ -14,13 +15,17 @@ const _Login = async (
   const _data = await verifyLogin(phone, res);
   const _data_1 = await verifyname(phone, user_password, res);
   if(codemsg === "验证成功!" && _data && _data_1 ){
-    res.json({
-        code: RETURNED._SUCCESS,
-        msg: _data_1,
+    const {user_name,id}=_data_1
+    setToken(user_name,id).then(token=>{
+      res.json({
+          code: RETURNED._SUCCESS,
+          msg: _data_1,
+          token:token
+      });
     });
   };
 };
-const _Code = (req:Express.Request, res: Express.Response) => {
+export const _Code = (req:Express.Request, res: Express.Response) => {
   verifcode = verificationcode();
   if (verifcode) {
     res.json({
@@ -41,7 +46,7 @@ let verifyLogin = async (phone: string | Number , res: Express.Response) => {
   var sqlArr = {
     phone
   };
-  let _data = await dbConfig.dbfind(sql, sqlArr);
+  let _data:any = await dbConfig.dbfind(sql, sqlArr);
   if (_data.result != "undefined" && _data.result === "select") {
     return _data.data;
   } else {
@@ -58,7 +63,7 @@ let verifyname = async (phone:string | Number, user_password: string, res: Expre
     phone,
     user_password
   };
-  let _data = await dbConfig.dbfind(sql, sqlArr);
+  let _data:any = await dbConfig.dbfind(sql, sqlArr);
   if (_data.result != "undefined" && _data.result === "select") {
     return _data.data;
   } else {
@@ -69,7 +74,7 @@ let verifyname = async (phone:string | Number, user_password: string, res: Expre
   }
 };
 //验证验证码是否匹配
-let verif_code = (code: string, res: Express.Response) => {
+export let verif_code = (code: string, res: Express.Response) => {
   if (verifcode === code) return "验证成功!";
   else res.json({ code: RETURNED._ERROR, msg: "验证验有误请重新输入!" });
 };
@@ -92,10 +97,4 @@ let verificationcode = () => {
     arr.push(char);
   }
   return arr.join(""); //将数组转为字符串，以空格分隔，并返回
-};
-//暴露
-module.exports = {
-  _Login,
-  _Code,
-  verif_code,
 };

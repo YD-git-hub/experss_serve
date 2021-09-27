@@ -1,9 +1,9 @@
-var express = require('express');
+import express from "express"
 var router = express.Router();
-var cate =require('../controllers/cateContrologin')
+import * as cate from "../controllers/cateContrologin"
 
 /* GET home page. */
 router.post('/login',cate._Login);
-router.get('/Code',cate._Code);
+router.get('/code',cate._Code);
 
-module.exports = router;
+export default router;
