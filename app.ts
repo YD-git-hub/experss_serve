@@ -11,6 +11,8 @@ import loginRouter from './routes/login';
 import signRouter from './routes/sign';
 //post 请求插件
 import bodyParser from 'body-parser';
+// 获取本地IP
+import {getNetworkIp} from "./common/IP"
 const app = express();
 //修改入口文件
 const server = http.createServer(app);
@@ -47,4 +49,4 @@ app.use((err: { status: number; },req:express.Request,res:express.Response,next:
 });
 app.use('/login', loginRouter);
 app.use('/sign', signRouter);
-server.listen('3000',() => console.log("Example app listening on port 3000!"));
+server.listen('3000',() => console.log(`服务启动成功->地址为:http://${getNetworkIp()}:3000`));

@@ -1,6 +1,7 @@
 import { sign } from "./../util/sql";
 import * as dbConfig from "../util/dbconfig";
 import RETURNED from "../common/returned";
+import * as vertoken from "../token/token";
 import Express from "express";
 let cate =require('./cateContrologin');
 
@@ -24,3 +25,9 @@ export const _sign= async (req:{body:{user_name:string,phone:string | Number,use
         };
     };
 };
+export const _aa = async (req:Express.Request,res:Express.Response,next: () => void)=>{
+    res.json({
+        code:RETURNED._SUCCESS,
+        msg:'token验证成功'
+    })
+}

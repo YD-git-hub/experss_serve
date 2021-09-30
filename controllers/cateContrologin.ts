@@ -15,8 +15,8 @@ export const _Login = async (
   const _data = await verifyLogin(phone, res);
   const _data_1 = await verifyname(phone, user_password, res);
   if(codemsg === "验证成功!" && _data && _data_1 ){
-    const {user_name,id}=_data_1
-    setToken(user_name,id).then(token=>{
+    const {id}=_data_1
+    setToken(id).then(token=>{
       res.json({
           code: RETURNED._SUCCESS,
           msg: _data_1,
