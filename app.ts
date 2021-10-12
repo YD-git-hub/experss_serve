@@ -1,3 +1,4 @@
+import { _uploder } from './controllers/cateControUploder';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
@@ -9,10 +10,13 @@ import * as vertoken from "./token/token";
 //路由
 import loginRouter from './routes/login';
 import signRouter from './routes/sign';
+import uploaderRouter from './routes/uploader';
 //post 请求插件
 import bodyParser from 'body-parser';
 // 获取本地IP
-import {getNetworkIp} from "./common/IP"
+import {getNetworkIp} from "./common/IP";
+//端口
+import setting from './common/setting';
 const app = express();
 //修改入口文件
 const server = http.createServer(app);
@@ -39,7 +43,7 @@ app.use(expressJwt({
     secret:'zgs_first_token',
     algorithms:['HS256']
 }).unless({
-    path:['/login/code','/login/login']
+    path:['/login/code','/login/login','/uploder/uploadimg']
 }));
 //token失效返回信息
 app.use((err: { status: number; },req:express.Request,res:express.Response,next:()=>void)=>{
@@ -49,4 +53,5 @@ app.use((err: { status: number; },req:express.Request,res:express.Response,next:
 });
 app.use('/login', loginRouter);
 app.use('/sign', signRouter);
-server.listen('3000',() => console.log(`服务启动成功->地址为:http://${getNetworkIp()}:3000`));
+app.use('/uploder', uploaderRouter);
+server.listen(setting.port,() => console.log(`服务启动成功->地址为:http://${getNetworkIp()}:${setting.port}`));

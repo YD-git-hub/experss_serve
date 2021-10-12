@@ -1,7 +1,6 @@
 import { sign } from "./../util/sql";
 import * as dbConfig from "../util/dbconfig";
 import RETURNED from "../common/returned";
-import * as vertoken from "../token/token";
 import Express from "express";
 let cate =require('./cateContrologin');
 
