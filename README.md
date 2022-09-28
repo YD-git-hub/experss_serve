@@ -1,5 +1,8 @@
 npm run install 依赖
 
+npm install -g nodemon 下载插件
+npm install -g ts-node 下载插件
+
 npm run start 运行
 
 ```
